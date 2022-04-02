@@ -64,12 +64,14 @@ class FullLoss(nn.Module):
         self.loss1 = SegLoss()
         self.loss2 = BoundaryBCELoss()
         self.loss3 = DualLoss(cuda=True)
+        self.loss4 = BinaryDiceLoss()
 
     def forward(self, seg, edge, target, boundary):
         loss1 = self.loss1(seg, target)
         loss2 = self.loss2(edge, target, boundary)
         loss3 = self.loss3(seg, target)
-        loss = loss1 + 20 * loss2 + loss3
+        loss4 = self.loss4(edge, boundary)
+        loss = loss1 + 25 * loss2 + loss3 + loss4
 
         return loss
 
